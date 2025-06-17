@@ -4,7 +4,7 @@ import cv2
 from color_checker import auto_detect_patches
 from manual_patch_selection import manual_patch_selection
 from color_utils import compute_correction_matrix, apply_matrix
-from lab_plot import show_lab_plot_grid
+from lab_plot import show_input_vs_target_lab_plot  # Only using this plot now
 
 def load_image(uploaded_file):
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
@@ -49,11 +49,8 @@ if input_img_file and target_img_file:
     st.text(np.array2string(corrected_matrix, precision=4, separator=", "))
     st.download_button("Download Matrix", corrected_matrix.tobytes(), file_name="refined_matrix.npy")
 
-    st.subheader("📊 LAB Space Visualizations with Metrics")
-    L_value = st.slider("L* value for LAB background", 0, 100, 70)
-    saturation = st.slider("Saturation of LAB background", 0.0, 1.0, 0.9)
-
-    show_lab_plot_grid(input_patches, corrected_patches, target_patches, L_value=L_value, saturation_factor=saturation, cct=cct_option)
+    st.subheader("📊 Input vs Target in a*b* Space")
+    show_input_vs_target_lab_plot(input_patches, target_patches)
 
 else:
     st.info("Please upload both an input and target image.")
